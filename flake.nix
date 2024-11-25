@@ -8,6 +8,9 @@
   outputs =
     { self, ... }:
     {
+      nixosModules = {
+        swayosd = import ./nixos/swayosd.nix;
+      };
       homeManagerModules = {
         default = import ./home/vesktop.nix;
         vesktop = import ./home/vesktop.nix;
