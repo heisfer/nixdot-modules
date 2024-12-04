@@ -12,8 +12,9 @@
         swayosd = import ./nixos/swayosd.nix;
       };
       homeManagerModules = {
-        default = import ./home/vesktop.nix;
+        default = import ./home;
         vesktop = import ./home/vesktop.nix;
+        telegram = import ./home/telegram.nix;
       };
     };
 }
