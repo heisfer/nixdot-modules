@@ -5,6 +5,14 @@
   ...
 }:
 let
+  inherit (lib)
+    mkEnableOption
+    mkPackageOption
+    mkOption
+    literalExpression
+    types
+    mkIf
+    ;
   cfg = config.programs.vesktop;
 
   jsonFormat = pkgs.formats.json { };
@@ -13,16 +21,16 @@ in
 {
   options = {
     programs.vesktop = {
-      enable = lib.mkEnableOption "vekstop";
+      enable = mkEnableOption "vekstop";
 
-      package = lib.mkPackageOption pkgs "vesktop" { };
+      package = mkPackageOption pkgs "vesktop" { };
 
-      withSystemVencord = lib.mkEnableOption "system vencord package";
+      withSystemVencord = mkEnableOption "system vencord package";
 
-      settings = lib.mkOption {
+      settings = mkOption {
         type = jsonFormat.type;
         default = { };
-        example = lib.literalExpression ''
+        example = literalExpression ''
           {
             autoUpdate = false;
             autoUpdateNotification = false;
@@ -38,8 +46,17 @@ in
           }
         '';
       };
+      quickCss = lib.mkOption {
+        default = null;
+        type = types.nullOr (
+          types.oneOf [
+            types.lines
+            types.path
+          ]
+        );
+      };
 
-      theme = lib.mkOption {
+      theme = mkOption {
         default = null;
         type =
           with lib.types;
@@ -51,7 +68,7 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = mkIf cfg.enable {
     home.packages = [ (cfg.package.override { withSystemVencord = cfg.withSystemVencord; }) ];
 
     xdg.configFile = {
@@ -63,6 +80,13 @@ in
             cfg.theme
           else
             pkgs.writeText "vesktop/themes/theme.css" cfg.theme;
+      };
+      "vesktop/settings/quickCss.css" = mkIf (cfg.quickCss != null) {
+        source =
+          if builtins.isPath cfg.quickCss || lib.isStorePath cfg.quickCss then
+            cfg.quickCss
+          else
+            pkgs.writeText "vesktop/settings/quickCss.css" cfg.quickCss;
       };
     };
 
