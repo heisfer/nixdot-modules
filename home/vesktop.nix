@@ -12,6 +12,7 @@ let
     literalExpression
     types
     mkIf
+    mapAttrs'
     ;
   cfg = config.programs.vesktop;
 
@@ -65,30 +66,47 @@ in
             path
           ]);
       };
+      themes = mkOption {
+        type = types.attrsOf types.lines;
+        default = { };
+      };
     };
   };
 
   config = mkIf cfg.enable {
     home.packages = [ (cfg.package.override { withSystemVencord = cfg.withSystemVencord; }) ];
 
-    xdg.configFile = {
-      "vesktop/settings/settings.json".source = jsonFormat.generate "vesktop-settings" cfg.settings;
+    xdg.configFile =
+      let
+        themes = (
+          mapAttrs' (
+            name: value:
+            lib.attrsets.nameValuePair "vesktop/themes/${name}.css" {
+              text = value;
+            }
+          ) cfg.themes
+        );
 
-      "vesktop/themes/theme.css" = lib.mkIf (cfg.theme != null) {
-        source =
-          if builtins.isPath cfg.theme || lib.isStorePath cfg.theme then
-            cfg.theme
-          else
-            pkgs.writeText "vesktop/themes/theme.css" cfg.theme;
+      in
+      themes
+      // {
+        "vesktop/settings/settings.json".source = jsonFormat.generate "vesktop-settings" cfg.settings;
+
+        "vesktop/themes/theme.css" = lib.mkIf (cfg.theme != null) {
+          source =
+            if builtins.isPath cfg.theme || lib.isStorePath cfg.theme then
+              cfg.theme
+            else
+              pkgs.writeText "vesktop/themes/theme.css" cfg.theme;
+        };
+        "vesktop/settings/quickCss.css" = mkIf (cfg.quickCss != null) {
+          source =
+            if builtins.isPath cfg.quickCss || lib.isStorePath cfg.quickCss then
+              cfg.quickCss
+            else
+              pkgs.writeText "vesktop/settings/quickCss.css" cfg.quickCss;
+        };
       };
-      "vesktop/settings/quickCss.css" = mkIf (cfg.quickCss != null) {
-        source =
-          if builtins.isPath cfg.quickCss || lib.isStorePath cfg.quickCss then
-            cfg.quickCss
-          else
-            pkgs.writeText "vesktop/settings/quickCss.css" cfg.quickCss;
-      };
-    };
 
   };
 }
