@@ -10,6 +10,7 @@
     {
       nixosModules = {
         swayosd = import ./nixos/swayosd.nix;
+        ath11k = import ./nixos/ath11k.nix;
       };
       homeManagerModules = {
         default = import ./home;
