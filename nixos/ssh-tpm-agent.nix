@@ -9,7 +9,6 @@ let
     mkEnableOption
     mkPackageOption
     mkIf
-    getExe
     getExe'
     ;
   cfg = config.services.ssh-tpm-agent;
@@ -17,7 +16,7 @@ in
 {
   options = {
     services.ssh-tpm-agent = {
-      enable = mkEnableOption;
+      enable = mkEnableOption "ssh-tpm-agent";
       package = mkPackageOption pkgs "ssh-tpm-agent" { };
     };
   };
