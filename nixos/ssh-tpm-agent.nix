@@ -73,7 +73,7 @@ in
         SocketMode = "0600";
         Service = "ssh-tpm-agent.ssh";
       };
-      wantedBy = "sockets.target";
+      wantedBy = [ "sockets.socket" ];
     };
 
   };
