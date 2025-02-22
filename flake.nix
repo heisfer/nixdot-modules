@@ -11,6 +11,7 @@
       nixosModules = {
         swayosd = import ./nixos/swayosd.nix;
         ath11k = import ./nixos/ath11k.nix;
+        ssh-tpm-agent = import ./nixos/ssh-tpm-agent.nix;
       };
       homeManagerModules = {
         default = import ./home;
