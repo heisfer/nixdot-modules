@@ -77,34 +77,34 @@ in
       wantedBy = [ "sockets.socket" ];
     };
 
-    systemd.user.services.ssh-tpm-agent = {
-      unitConfig = {
-        ConditionEnvironment = "!SSH_AGENT_PID";
-        Description = "ssh-tpm-agent service";
-      };
-      serviceConfig = {
-        Environment = "SSH_TPM_AUTH_SOCK=%t/ssh-tpm-agent.sock";
-        ExecStart = "{{.GoBinary}}";
-        PassEnvironment = "SSH_AGENT_PID";
-        SuccessExitStatus = 2;
-        Type = "simple";
-      };
-      wantedBy = [ "ssh-agent.socket" ];
-    };
-    systemd.user.sockets.ssh-tpm-agent = {
-      description = "SSH TPM agent socket";
-      documentation = [
-        "man:ssh-agent(1)"
-        "man:ssh-add(1)"
-        "man:ssh(1)"
-      ];
-      socketConfig = {
-        ListenStream = "%t/ssh-tpm-agent.sock";
-        SocketMode = "0600";
-        Service = "ssh-tpm-agent.service";
-      };
-      wantedBy = [ "sockets.target" ];
-    };
+    # systemd.user.services.ssh-tpm-agent = {
+    #   unitConfig = {
+    #     ConditionEnvironment = "!SSH_AGENT_PID";
+    #     Description = "ssh-tpm-agent service";
+    #   };
+    #   serviceConfig = {
+    #     Environment = "SSH_TPM_AUTH_SOCK=%t/ssh-tpm-agent.sock";
+    #     ExecStart = "{{.GoBinary}}";
+    #     PassEnvironment = "SSH_AGENT_PID";
+    #     SuccessExitStatus = 2;
+    #     Type = "simple";
+    #   };
+    #   wantedBy = [ "ssh-agent.socket" ];
+    # };
+    # systemd.user.sockets.ssh-tpm-agent = {
+    #   description = "SSH TPM agent socket";
+    #   documentation = [
+    #     "man:ssh-agent(1)"
+    #     "man:ssh-add(1)"
+    #     "man:ssh(1)"
+    #   ];
+    #   socketConfig = {
+    #     ListenStream = "%t/ssh-tpm-agent.sock";
+    #     SocketMode = "0600";
+    #     Service = "ssh-tpm-agent.service";
+    #   };
+    #   wantedBy = [ "sockets.target" ];
+    # };
 
   };
 
