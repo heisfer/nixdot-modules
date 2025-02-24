@@ -17,7 +17,6 @@
         default = import ./home;
         vesktop = import ./home/vesktop.nix;
         telegram = import ./home/telegram.nix;
-        wpaperd = import ./home/wpaperd.nix;
       };
     };
 }
