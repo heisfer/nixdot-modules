@@ -7,7 +7,6 @@ in
   dotmod = {
     generators = callLibs ./generators.nix;
     types = callLibs ./types.nix;
-    builder = callLibs ./builder.nix;
     extra = callLibs ./extra.nix;
   };
 }
