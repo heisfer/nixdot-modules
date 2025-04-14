@@ -43,6 +43,9 @@ let
     }
     // optionalAttrs (cfg.cursorTheme.size != null) {
       gtk-cursor-theme-size = cfg.cursorTheme.size;
+    }
+    // optionalAttrs (cfg.iconTheme.name != null) {
+      gtk-icon-theme-name = cfg.iconTheme.name;
     };
 
 in
@@ -61,6 +64,18 @@ in
         type = listOf package;
         default = [ ];
         description = "List of GTK themes";
+      };
+    };
+    iconTheme = {
+      name = mkOption {
+        type = nullOr str;
+        default = null;
+        description = "Primary GTK Icon Theme";
+      };
+      packages = mkOption {
+        type = listOf package;
+        default = [ ];
+        description = "List of GTK Icon Themes";
       };
     };
     cursorTheme = {
@@ -101,7 +116,8 @@ in
 
     environment.systemPackages =
       optionals (cfg.theme.packages != [ ]) cfg.theme.packages
-      ++ optionals (cfg.cursorTheme.packages != [ ]) cfg.cursorTheme.packages;
+      ++ optionals (cfg.cursorTheme.packages != [ ]) cfg.cursorTheme.packages
+      ++ optionals (cfg.iconTheme.packages != [ ]) cfg.iconTheme.packages;
 
     environment.etc."gtk-4.0/settings.ini".text = gtkINI {
       Settings = gtkSettings // cfg.gtk4.settings;
@@ -144,6 +160,16 @@ in
               settings = {
                 "org/gnome/desktop/interface" = {
                   cursor-size = lib.gvariant.mkInt32 cfg.cursorTheme.size;
+                };
+              };
+            }
+          ])
+          (mkIf (cfg.iconTheme.name != null) [
+            {
+              lockAll = true;
+              settings = {
+                "org/gnome/desktop/interface" = {
+                  icon-theme = cfg.iconTheme.name;
                 };
               };
             }
