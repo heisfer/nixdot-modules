@@ -4,6 +4,7 @@
     ./programs/kdiskmark.nix
     ./programs/hyprnotify.nix
     ./programs/waybar.nix
+    ./programs/hyprland.nix
 
     ./services/ath11k.nix
     ./services/swayosd.nix
